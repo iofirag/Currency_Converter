@@ -14,44 +14,47 @@ namespace WpfApplication1 {
     public class Data : IData {
 
         // Data
-        public List<Currency> currencyList {get;set;} 
-        public string lastUpdate             {get; set;}
+        public List<Currency> CurrencyList {get;set;}
+        public string LastUpdate { get; set; }
 
         // Async delegate method
-        public DownloadDelegateAsync Dd {get;set;}
+        public DownloadDelegateAsync DDownload {get;set;}
 
 
 
         public Data() {
             // initialize
-            currencyList=new List<Currency>();
-            lastUpdate="";
+            CurrencyList=new List<Currency>();
+            LastUpdate="";
 
             // Async delegate 
-            Dd=DownloadXML;
-                                                Console.WriteLine("Data()");
-            //IAsyncResult r=Dd.BeginInvoke(null, null);
-            //                                    Console.WriteLine("after");
-            //Dd.EndInvoke(r);
-                                                //Console.WriteLine("do something after EndInvoke");
+            DDownload=DownloadXML;
         }
 
 
         public Boolean DownloadXML() {
-            string url="http://www.boi.org.il/currency.xml";    //http://www.bankisrael.gov.il/currency.xml
-            string xml;
+            string Url="http://www.boi.org.il/currency.xml";   //hhttp://www.bankisrael.gov.il/currency.xml
             try {
+
+                
                 /* Download XML file */
-                using (var webClient=new WebClient()) {
-                    xml=webClient.DownloadString(url);
-                }
+                //using (var webClient = new WebClient())
+                //{
+                //    Xml = webClient.DownloadString(Url);
+                //    Console.WriteLine(Xml);
+                //}
+
+                string Xml = new WebClient().DownloadString(Url);
+                Console.WriteLine(Xml);
 
                 /* parse XML */
-                XDocument ob=XDocument.Parse(xml);
+                XDocument Ob = XDocument.Parse(Xml);
+
+
 
                 /* Take evry currency data */
                 //---------------------------------
-                var Currencies=from c in ob.Descendants("CURRENCY")
+                var Currencies=from c in Ob.Descendants("CURRENCY")
                                select new {
                                    Name=c.Descendants("NAME").First().Value,
                                    Unit=c.Descendants("UNIT").First().Value,
@@ -60,23 +63,23 @@ namespace WpfApplication1 {
                                    Rate=c.Descendants("RATE").First().Value,
                                    Change=c.Descendants("CHANGE").First().Value
                                };
-                currencyList.Clear();       // init currencyList with parameters   
+                CurrencyList.Clear();       // init currencyList with parameters   
                 foreach (var currency in Currencies) {
                     Currency c=new Currency(currency.Name, int.Parse(currency.Unit), currency.CurrencyCode, currency.Country, double.Parse(currency.Rate), double.Parse(currency.Change));
                     Console.WriteLine(c.toString());
-                    currencyList.Add(c);
+                    CurrencyList.Add(c);
                 }
 
                 /* Take Last Update data */
                 //---------------------------------
-                var LastUpdateARR=from c in ob.Descendants("CURRENCIES")
+                var LastUpdateARR=from c in Ob.Descendants("CURRENCIES")
                                   select new {
                                       Val=c.Descendants("LAST_UPDATE").First().Value
                                   };
                 foreach (var last in LastUpdateARR) {
-                    lastUpdate=last.Val;
+                    LastUpdate=last.Val;
                 }
-                System.Console.WriteLine(lastUpdate);
+                System.Console.WriteLine(LastUpdate);
                 return true;
             } catch (Exception e) {
                 Console.WriteLine("Error: Download field, Check your internet connection.");

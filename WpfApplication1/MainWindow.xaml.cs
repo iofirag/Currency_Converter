@@ -22,66 +22,47 @@ namespace WpfApplication1 {
 
         Data data;
 
-        public delegate void Update();
-        public Update Uui;
+        private delegate void Update();
+        private Update uui;
 
-        //int.Parse(tbAmount1.Text)
-        //int.Parse(tbAmount2.Text)
-        //data.currencyList.ElementAt(cbCurrencyList1.SelectedIndex).getRate()
-        //data.currencyList.ElementAt(cbCurrencyList2.SelectedIndex).getRate()
-
-        double _cbCurrencyList1;
-        double _cbCurrencyList2;
-        double _mtbAmount1=0;
-        //double _mtbAmount2=0;
+        private double _cbCurrencyList1;
+        private double _cbCurrencyList2;
+        private double _mtbAmount1 = 0;
 
         public MainWindow() {
             InitializeComponent();
 
             data=new Data();
 
-            Uui=updateUI;
-            Dispatcher.Invoke(data.Dd);
-            Dispatcher.Invoke(Uui);
-            //IAsyncResult r=data.Dd.BeginInvoke(Uui, null);   //<--
+            uui=updateUI;
 
-            //d
-            //data.Dd.EndInvoke(r);   //do something after EndInvoke
-            //updateUI();    
+            invoke();
         }
 
 
 
         private void bUpdate_Click(object sender, RoutedEventArgs e) {
-            // Run Async method
-            //IAsyncResult r=data.Dd.BeginInvoke(null, null);   //<--
-            
-            ////d
-            //data.Dd.EndInvoke(r);   //do something after EndInvoke
-            //updateUI();     
-
-
-
-            Dispatcher.Invoke(data.Dd);
-            Dispatcher.Invoke(Uui);
+            invoke();
         }
 
-        
-
-
+        public void invoke() {
+            // Run Async method
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(data.DDownload);
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(uui);
+        }
 
 
         private void cbCurrencyList1_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (cbCurrencyList1.SelectedIndex >= 0){    //check if user has change the first value
                 Console.WriteLine(cbCurrencyList1.SelectedIndex);
-                _cbCurrencyList1 = data.currencyList.ElementAt(cbCurrencyList1.SelectedIndex).getRate();
+                _cbCurrencyList1 = data.CurrencyList.ElementAt(cbCurrencyList1.SelectedIndex).getRate();
                 Console.WriteLine(_cbCurrencyList1);
             }
         }
         private void cbCurrencyList2_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (cbCurrencyList2.SelectedIndex>=0) {    //check if user has change the first value
                 Console.WriteLine(cbCurrencyList2.SelectedIndex);
-                _cbCurrencyList2 = data.currencyList.ElementAt(cbCurrencyList2.SelectedIndex).getRate();
+                _cbCurrencyList2 = data.CurrencyList.ElementAt(cbCurrencyList2.SelectedIndex).getRate();
                 Console.WriteLine(_cbCurrencyList2);
             }
         }
@@ -102,45 +83,17 @@ namespace WpfApplication1 {
         private void bResult_Click(object sender, RoutedEventArgs e) {
             // calculate
             Console.WriteLine(_mtbAmount1+" "+_cbCurrencyList1+" "+_cbCurrencyList2);
-            tbAmount2.Text=""+(_mtbAmount1*_cbCurrencyList1)/_cbCurrencyList2;
-            //_cbCurrencyList2_SelectedIndex        
+            tbAmount2.Text=""+(_mtbAmount1*_cbCurrencyList1)/_cbCurrencyList2;     
         }
 
-
-
-
-
-        //private void updateUI(IAsyncResult ar) {        //   <--------
-            //throw new NotImplementedException();
-            //// Update LastUpdate
-            //lLastUpdate.Content=data.lastUpdate;
-
-            //cbCurrencyList1.Items.Clear();      // init
-            //cbCurrencyList2.Items.Clear();      // init
-            //// Update ComboBox
-            //foreach (Currency currency in data.currencyList) {
-            //    cbCurrencyList1.Items.Add(currency.getCurrencyCode());
-            //    cbCurrencyList2.Items.Add(currency.getCurrencyCode());
-            //}
-            //if (cbCurrencyList1.SelectedIndex < 0)
-            //    cbCurrencyList1.SelectedIndex=0;
-
-            //if (cbCurrencyList2.SelectedIndex < 0)
-            //    cbCurrencyList2.SelectedIndex=0;
-
-            //Console.WriteLine("download complete");
-            //tbAmount1.Text = "Start 1";
-            
-            //tbAmount1.set.Text="222";
-        //}
         public void updateUI(){
             // Update LastUpdate
-            lLastUpdate.Content=data.lastUpdate;
+            lLastUpdate.Content=data.LastUpdate;
 
             cbCurrencyList1.Items.Clear();      // init
             cbCurrencyList2.Items.Clear();      // init
             // Update ComboBox
-            foreach (Currency currency in data.currencyList) {
+            foreach (Currency currency in data.CurrencyList) {
                 cbCurrencyList1.Items.Add(currency.getCurrencyCode());
                 cbCurrencyList2.Items.Add(currency.getCurrencyCode());
             }
