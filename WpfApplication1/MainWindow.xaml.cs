@@ -22,8 +22,11 @@ namespace WpfApplication1 {
 
         Data data;
 
-        private delegate void Update();
-        private Update uui;
+        private delegate void DownloadAndUpdate();
+        private DownloadAndUpdate dap;
+
+        private delegate void UpdateUI();
+        private UpdateUI uui;
 
         private double _cbCurrencyList1;
         private double _cbCurrencyList2;
@@ -33,24 +36,22 @@ namespace WpfApplication1 {
             InitializeComponent();
 
             data=new Data();
-
+            dap=DownloadAndUpdateFunction;
             uui=updateUI;
 
-            invoke();
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(dap);
         }
 
-
-
-        private void bUpdate_Click(object sender, RoutedEventArgs e) {
-            invoke();
-        }
-
-        public void invoke() {
-            // Run Async method
+        public void DownloadAndUpdateFunction() {
+            // Run Async delegate methods
             System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(data.DDownload);
             System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(uui);
         }
 
+
+        private void bUpdate_Click(object sender, RoutedEventArgs e) {
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(dap);
+        }
 
         private void cbCurrencyList1_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (cbCurrencyList1.SelectedIndex >= 0){    //check if user has change the first value
@@ -86,7 +87,7 @@ namespace WpfApplication1 {
             tbAmount2.Text=""+(_mtbAmount1*_cbCurrencyList1)/_cbCurrencyList2;     
         }
 
-        public void updateUI(){
+        private void updateUI() {
             // Update LastUpdate
             lLastUpdate.Content=data.LastUpdate;
 

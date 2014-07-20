@@ -33,19 +33,30 @@ namespace WpfApplication1 {
 
 
         public Boolean DownloadXML() {
-            string Url="http://www.boi.org.il/currency.xml";   //hhttp://www.bankisrael.gov.il/currency.xml
+            string Url="http://www.boi.org.il/currency.xml";
+                 //Url="hhttp://www.bankisrael.gov.il/currency.xml";
+            string Xml=null;
             try {
 
-                
                 /* Download XML file */
-                //using (var webClient = new WebClient())
-                //{
-                //    Xml = webClient.DownloadString(Url);
-                //    Console.WriteLine(Xml);
-                //}
-
-                string Xml = new WebClient().DownloadString(Url);
+                //for (int i=0; i<2; i++ ){
+                    //data downloaded great
+                    //if (Xml != null && !Xml.Contains("cookie") ){
+                    //    break;
+                    //}
+                Xml=new WebClient().DownloadString(Url);
                 Console.WriteLine(Xml);
+
+                /* Download XML file from my server */
+                //if data downloaded with errors
+                if (Xml!=null&&Xml.Contains("cookie")) {
+                    Console.WriteLine("Data downloaded with error.");
+                    Url="http://ofir.eu5.org/currencyConverter/currency.xml";
+                    Xml=new WebClient().DownloadString(Url);
+                    Console.WriteLine("Download file from my server.");
+                }
+                Console.WriteLine(Xml);
+
 
                 /* parse XML */
                 XDocument Ob = XDocument.Parse(Xml);
