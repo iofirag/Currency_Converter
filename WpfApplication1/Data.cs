@@ -39,11 +39,6 @@ namespace WpfApplication1 {
             try {
 
                 /* Download XML file */
-                //for (int i=0; i<2; i++ ){
-                    //data downloaded great
-                    //if (Xml != null && !Xml.Contains("cookie") ){
-                    //    break;
-                    //}
                 Xml=new WebClient().DownloadString(Url);
                 Console.WriteLine(Xml);
 
@@ -92,7 +87,7 @@ namespace WpfApplication1 {
                 }
                 System.Console.WriteLine(LastUpdate);
                 return true;
-            } catch (Exception e) {
+            } catch (BankIsraelException e) {
                 Console.WriteLine("Error: Download field, Check your internet connection.");
                 return false;
             }
